@@ -62,7 +62,30 @@ async function run() {
       res.send(result);
     });
 
-    
+    // update
+    app.put("/electricechoes/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const product = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedProduct = {
+        $set: {
+          product_name: product.product_name,
+          brand_name: product.brand_name,
+          product_price: product.product_price,
+          short_description: product.short_description,
+          image_url: product.image_url,
+          product_type: product.product_type,
+          product_rating: product.product_rating,
+        },
+      };
+      const result = await productsCollection.updateOne(
+        filter,
+        updatedProduct,
+        options
+      );
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
