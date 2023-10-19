@@ -27,8 +27,10 @@ async function run() {
     await client.connect();
 
     const database = client.db("electricEchoesDB");
+
     const brandsCollection = database.collection("brands");
     const productsCollection = database.collection("products");
+    const cartsCollection = database.collection("carts");
 
     // read brand name and image
     app.get("/electricechoes/brands", async (req, res) => {
@@ -55,12 +57,20 @@ async function run() {
       res.send(result);
     });
 
+
     // create
     app.post("/electricechoes/products", async (req, res) => {
       const product = req.body;
       const result = await productsCollection.insertOne(product);
       res.send(result);
     });
+     
+    // create - store 'add to cart' data 
+    app.post('/electricechoes/carts', async(req, res)=>{
+      const product = req.body;
+      const result = await cartsCollection.insertOne(product);
+      res.send(result)
+    })
 
     // update
     app.put("/electricechoes/products/:id", async (req, res) => {
