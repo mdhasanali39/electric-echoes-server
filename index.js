@@ -49,14 +49,16 @@ async function run() {
     // read single product
     app.get("/electricechoes/product/:id", async (req, res) => {
       const id = req.params.id;
-      console.log();
       const query = { _id: new ObjectId(id) };
-      console.log(query);
       const result = await productsCollection.findOne(query);
-      console.log(result);
       res.send(result);
     });
 
+    // read carts data 
+    app.get("/electricechoes/carts", async(req, res)=>{
+      const result = await cartsCollection.find().toArray();
+      res.send(result);
+    })
 
     // create
     app.post("/electricechoes/products", async (req, res) => {
@@ -66,7 +68,7 @@ async function run() {
     });
      
     // create - store 'add to cart' data 
-    app.post('/electricechoes/carts', async(req, res)=>{
+    app.post("/electricechoes/carts", async(req, res)=>{
       const product = req.body;
       const result = await cartsCollection.insertOne(product);
       res.send(result)
