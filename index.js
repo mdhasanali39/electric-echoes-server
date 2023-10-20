@@ -10,7 +10,7 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-const uri = `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASS}@electricechoescluster0.vt45vjw.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@electricechoescluster0.vt45vjw.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -98,6 +98,29 @@ async function run() {
       );
       res.send(result);
     });
+
+    // patch - update partial 
+    app.patch('/electricechoes/carts/:id', async(req, res)=>{
+      const id = req.params.id;
+      const newQuantity = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updatedQuantity = {
+        $set: {
+          quantity: newQuantity.quantity
+        }
+      }
+      const result = await cartsCollection.updateOne(filter,updatedQuantity)
+      res.send(result)
+    })
+
+    // delete from cart 
+    app.delete('/electricechoes/carts/:id', async(req, res)=>{
+      const id = req.params.id
+      const query = {_id: new ObjectId(id)}
+      const result = await cartsCollection.deleteOne(query)
+      res.send(result)
+    })
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
