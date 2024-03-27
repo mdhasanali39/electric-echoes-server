@@ -102,11 +102,12 @@ async function run() {
     // patch - update partial 
     app.patch('/electricechoes/carts/:id', async(req, res)=>{
       const id = req.params.id;
-      const newQuantity = req.body;
+      const newUpdate = req.body;
       const filter = { _id: new ObjectId(id) };
       const updatedQuantity = {
         $set: {
-          quantity: newQuantity.quantity
+          quantity: newUpdate.quantity,
+          total_price: newUpdate.total_price
         }
       }
       const result = await cartsCollection.updateOne(filter,updatedQuantity)
